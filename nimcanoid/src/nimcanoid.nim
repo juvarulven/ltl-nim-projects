@@ -9,6 +9,8 @@ import
 
 game = newGame()
 if game.init(GameWidth, GameHeight, title=GameTitle, integerScale = true):
+    loadData()
+    
     game.setResizable(true)
     game.minSize = (GameWidth, GameHeight)
     game.centrify()
@@ -18,4 +20,3 @@ if game.init(GameWidth, GameHeight, title=GameTitle, integerScale = true):
 
     game.scene=titleScene
     game.run()
-    
