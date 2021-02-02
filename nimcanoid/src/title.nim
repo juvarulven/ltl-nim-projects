@@ -13,9 +13,10 @@ type
     TitleScene = ref object of Scene
 
 
-proc newText(text: string, font: TrueTypeFont, coord: Coord): Entity =
+proc newText(text: string, font: TrueTypeFont, color: Color, coord: Coord): Entity =
     let textgraphic = newTextGraphic(font)
     textgraphic.setText(text)
+    textgraphic.color = color
     result = newEntity()
     result.graphic = textgraphic
     result.centrify()
@@ -24,9 +25,9 @@ proc newText(text: string, font: TrueTypeFont, coord: Coord): Entity =
 proc init*(scene: TitleScene) =
     initScene(Scene(scene))
 
-    let title = newText(GameTitle, bigFont, (GameWidth/2, GameHeight/3))
+    let title = newText(GameTitle, bigFont, ColorDarkOrange, (GameWidth/2, GameHeight/3))
     scene.add(title)
-    let message = newText("Press any key to continue", defaultFont, (GameWidth/2, GameHeight/2))
+    let message = newText("Press any key to continue", defaultFont, ColorWhite, (GameWidth/2, GameHeight/2))
     scene.add(message)
 
 
