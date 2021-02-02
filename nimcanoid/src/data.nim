@@ -4,7 +4,8 @@ import
     nimgame2/scene,
     nimgame2/types,
     nimgame2/font,
-    nimgame2/truetypefont
+    nimgame2/truetypefont,
+    nimgame2/texturegraphic
 
 
 const
@@ -16,9 +17,10 @@ const
 var
     titleScene*, mainScene*: Scene
     defaultFont*, bigFont*: TrueTypeFont
+    gfxData*: Assets[TextureGraphic]
 
 
-proc newFont*(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTypeFont =
+proc newFont(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTypeFont =
     result = newTrueTypeFont()
     discard result.load(path, size)
 
@@ -26,8 +28,11 @@ proc newFont*(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTy
 proc loadData*() =
     defaultFont = newFont(16)
     bigFont = newFont(32)
+    gfxData = newAssets[TextureGraphic]("res/gfx", proc(file: string): TextureGraphic = newTextureGraphic(file))
 
 
 proc freeData*() =
     defaultFont.free()
     bigFont.free()
+    for graphic in gfxData.values():
+        graphic.free()

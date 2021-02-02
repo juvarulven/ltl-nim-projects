@@ -31,8 +31,6 @@ proc init*(scene: TitleScene) =
     scene.add(message)
 
 
-
-
 proc free*(scene: TitleScene) =
     discard
 
