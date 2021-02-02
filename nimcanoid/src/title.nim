@@ -26,6 +26,8 @@ proc init*(scene: TitleScene) =
 
     let title = newText(GameTitle, bigFont, (GameWidth/2, GameHeight/3))
     scene.add(title)
+    let message = newText("Press any key to continue", defaultFont, (GameWidth/2, GameHeight/2))
+    scene.add(message)
 
 
 

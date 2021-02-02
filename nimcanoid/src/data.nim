@@ -18,10 +18,9 @@ var
     defaultFont*, bigFont*: TrueTypeFont
 
 
-proc newFont*(size: int, path: string = "data/fnt/outline_inverkrug.otf"): TrueTypeFont =
+proc newFont*(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTypeFont =
     result = newTrueTypeFont()
-    if not result.load(path, size):
-        echo("ERROR: Can't load font")
+    discard result.load(path, size)
 
 
 proc loadData*() =
