@@ -3,7 +3,8 @@ import
     nimgame2/scene,
     nimgame2/types,
     data,
-    paddle
+    paddle,
+    ball
 
 
 type
@@ -14,6 +15,8 @@ proc init*(scene: MainScene) =
     initScene(Scene(scene))
     let paddle = newPaddle()
     scene.add(paddle)
+    let ball = newBall()
+    scene.add(ball)
 
 
 proc free*(scene: MainScene) =
