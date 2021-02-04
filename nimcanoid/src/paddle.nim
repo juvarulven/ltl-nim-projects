@@ -16,12 +16,17 @@ type
         level*: range[0..4]
 
 
+proc reset*(paddle: Paddle) =
+    paddle.pos = (game.size.w/2, float(game.size.h - paddle.graphic.h))
+
+
 proc initPaddle*(paddle: Paddle) =
     paddle.initEntity()
+    paddle.tags.add("paddle")
     paddle.graphic = gfxData["paddle-0"]
     paddle.centrify()
-    paddle.pos = (game.size.w/2, float(game.size.h - paddle.graphic.h))
     paddle.level = 0
+    paddle.reset()
 
 
 proc newPaddle*(): Paddle =

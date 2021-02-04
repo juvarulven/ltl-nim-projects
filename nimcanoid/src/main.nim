@@ -9,14 +9,16 @@ import
 
 type
     MainScene = ref object of Scene
+        paddle: Paddle
+        ball: Ball
 
 
 proc init*(scene: MainScene) =
     initScene(Scene(scene))
-    let paddle = newPaddle()
-    scene.add(paddle)
-    let ball = newBall()
-    scene.add(ball)
+    scene.paddle = newPaddle()
+    scene.add(scene.paddle)
+    scene.ball = newBall()
+    scene.add(scene.ball)
 
 
 proc free*(scene: MainScene) =
@@ -30,3 +32,5 @@ proc newMainScene*(): MainScene =
 
 method show*(scene: MainScene) =
     echo("Let's go")
+    scene.paddle.reset()
+    scene.ball.reset()
