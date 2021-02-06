@@ -2,6 +2,8 @@ import
     nimgame2/nimgame,
     nimgame2/scene,
     nimgame2/types,
+    nimgame2/input,
+    nimgame2/settings,
     data,
     paddle,
     ball
@@ -34,3 +36,9 @@ method show*(scene: MainScene) =
     echo("Let's go")
     scene.paddle.reset()
     scene.ball.reset()
+
+
+method update*(scene: MainScene, elapsed: float) =
+    scene.updateScene(elapsed)
+    if ScancodeF10.pressed: colliderOutline = not colliderOutline
+    if ScancodeF11.pressed: showInfo = not showInfo

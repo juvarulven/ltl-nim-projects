@@ -22,9 +22,13 @@ proc reset*(paddle: Paddle) =
 
 proc initPaddle*(paddle: Paddle) =
     paddle.initEntity()
-    paddle.tags.add("paddle")
     paddle.graphic = gfxData["paddle-0"]
     paddle.centrify()
+
+    paddle.tags.add("paddle")
+    paddle.collider = paddle.newBoxCollider((0.0, 0.0), paddle.graphic.dim)
+    paddle.collider.tags.add("ball")
+    
     paddle.level = 0
     paddle.reset()
 

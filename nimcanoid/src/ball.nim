@@ -6,7 +6,6 @@ import
     nimgame2/nimgame,
     nimgame2/scene,
     nimgame2/input,
-    main,
     data
 
 const
@@ -52,15 +51,16 @@ proc bounce(ball: Ball, direction: BounceDirection) =
 
 proc reset*(ball: Ball) =
     ball.flying = false
-    ball.angle = 210.0
-
-
+    ball.angle = 230.0
     
 
 proc initBall*(ball: Ball) =
     ball.initEntity()
     ball.graphic = gfxData["ball"]
     ball.centrify()
+    ball.tags.add("ball")
+    ball.collider = ball.newCircleCollider((0.0, 0.0), ball.graphic.h/2)
+    ball.collider.tags.add("paddle")
     ball.reset()
 
 
@@ -77,11 +77,12 @@ proc staticUpdate(ball: Ball) =
 
 
 proc flyingUpdate(ball: Ball, elapsed: float) =
-    if ball.pos.x <= 0:
+    ##  While ball flying
+    if ball.pos.x - ball.graphic.w / 2 <= 0:
         ball.bounce(leftBounce)
-    if ball.pos.x >= game.size.w.float:
+    if ball.pos.x + ball.graphic.w / 2 >= game.size.w.float:
         ball.bounce(rightBounce)
-    if ball.pos.y <= 0:
+    if ball.pos.y - ball.graphic.h / 2 <= 0:
         ball.bounce(upBounce)
     if ball.pos.y >= game.size.h.float:
         ball.reset()
@@ -96,3 +97,17 @@ method update*(ball: Ball, elapsed: float) =
         ball.staticUpdate()
     else:
         ball.flyingUpdate(elapsed)
+
+
+proc paddleBounce(ball: Ball, target: Entity) =
+    if ball.pos.x < target.pos.x - target.graphic.w/4:
+        ball.angle += 10.0
+    elif ball.pos.x > target.pos.x + target.graphic.w/4:
+        ball.angle -= 10.0
+    ball.angle = ball.angle.clamp(20.0, 160.0)
+    ball.bounce(downBounce)
+
+
+method onCollide*(ball: Ball, target: Entity) =
+    if "paddle" in target.tags:
+        ball.paddleBounce(target)
