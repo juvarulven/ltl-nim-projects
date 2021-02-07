@@ -4,9 +4,12 @@ import
     nimgame2/types,
     nimgame2/input,
     nimgame2/settings,
+    nimgame2/tilemap,
+    nimgame2/entity,
     data,
     paddle,
-    ball
+    ball,
+    bricks
 
 
 type
@@ -15,12 +18,14 @@ type
         ball: Ball
 
 
-proc init*(scene: MainScene) =
+proc initMainScene*(scene: MainScene) =
     initScene(Scene(scene))
     scene.paddle = newPaddle()
     scene.add(scene.paddle)
     scene.ball = newBall()
     scene.add(scene.ball)
+    for brick in newBricks(0):
+        scene.add(brick)
 
 
 proc free*(scene: MainScene) =
@@ -29,7 +34,7 @@ proc free*(scene: MainScene) =
 
 proc newMainScene*(): MainScene =
     new result, free
-    init(result)
+    initMainScene(result)
 
 
 method show*(scene: MainScene) =

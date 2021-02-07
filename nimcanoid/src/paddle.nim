@@ -8,7 +8,7 @@ import
 
 
 const
-    SPEED = 500.0
+    SPEED = 1000.0
 
 
 type 
@@ -28,7 +28,7 @@ proc initPaddle*(paddle: Paddle) =
     paddle.tags.add("paddle")
     paddle.collider = paddle.newBoxCollider((0.0, 0.0), paddle.graphic.dim)
     paddle.collider.tags.add("ball")
-    
+
     paddle.level = 0
     paddle.reset()
 

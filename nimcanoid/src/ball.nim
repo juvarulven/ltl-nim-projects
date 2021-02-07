@@ -6,10 +6,11 @@ import
     nimgame2/nimgame,
     nimgame2/scene,
     nimgame2/input,
+    nimgame2/audio,
     data
 
 const
-    SPEED = 500.0
+    SPEED = 1000.0
 
 
 type
@@ -60,7 +61,7 @@ proc initBall*(ball: Ball) =
     ball.centrify()
     ball.tags.add("ball")
     ball.collider = ball.newCircleCollider((0.0, 0.0), ball.graphic.h/2)
-    ball.collider.tags.add("paddle")
+    ball.collider.tags.add(@["paddle", "brick"])
     ball.reset()
 
 
@@ -80,10 +81,13 @@ proc flyingUpdate(ball: Ball, elapsed: float) =
     ##  While ball flying
     if ball.pos.x - ball.graphic.w / 2 <= 0:
         ball.bounce(leftBounce)
+        discard sfxData["bounce"].play()
     if ball.pos.x + ball.graphic.w / 2 >= game.size.w.float:
         ball.bounce(rightBounce)
+        discard sfxData["bounce"].play()
     if ball.pos.y - ball.graphic.h / 2 <= 0:
         ball.bounce(upBounce)
+        discard sfxData["bounce"].play()
     if ball.pos.y >= game.size.h.float:
         ball.reset()
     ball.pos.x += SPEED * cos(degToRad(ball.angle)) * elapsed
@@ -106,8 +110,12 @@ proc paddleBounce(ball: Ball, target: Entity) =
         ball.angle -= 10.0
     ball.angle = ball.angle.clamp(20.0, 160.0)
     ball.bounce(downBounce)
+    discard sfxData["bounce"].play()
 
 
 method onCollide*(ball: Ball, target: Entity) =
     if "paddle" in target.tags:
         ball.paddleBounce(target)
+    if "brick" in target.tags:
+        echo target.pos
+        echo ball.pos
