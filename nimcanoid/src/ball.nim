@@ -7,10 +7,11 @@ import
     nimgame2/scene,
     nimgame2/input,
     nimgame2/audio,
+    nimgame2/types,
     data
 
 const
-    SPEED = 1000.0
+    SPEED = 750.0
 
 
 type
@@ -113,9 +114,29 @@ proc paddleBounce(ball: Ball, target: Entity) =
     discard sfxData["bounce"].play()
 
 
+proc brickBounce(ball: Ball, target: Entity) =
+    var direction: BounceDirection
+    let 
+        ballPos = ball.pos
+        brickPos = target.pos
+        ballHalf = ball.graphic.w / 2
+        brickHalfW = target.graphic.w / 2
+        brickHalfH = target.graphic.h / 2
+    if ballPos.x <= brickPos.x - brickHalfW - ballHalf:
+        direction = rightBounce
+    elif ballPos.x >= brickPos.x + brickHalfW + ballHalf:
+        direction = leftBounce
+    elif ballPos.y >= brickPos.y + brickHalfH + ballHalf:
+        direction = upBounce
+    else:
+        direction = downBounce
+    ball.bounce(direction)
+    discard sfxData["bounce"].play()
+    
+
+
 method onCollide*(ball: Ball, target: Entity) =
     if "paddle" in target.tags:
         ball.paddleBounce(target)
     if "brick" in target.tags:
-        echo target.pos
-        echo ball.pos
+        ball.brickBounce(target)
