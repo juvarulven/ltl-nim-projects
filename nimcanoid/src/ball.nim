@@ -8,7 +8,10 @@ import
     nimgame2/input,
     nimgame2/audio,
     nimgame2/types,
-    data
+    data,
+    bricks,
+    paddle
+
 
 const
     SPEED = 750.0
@@ -104,7 +107,7 @@ method update*(ball: Ball, elapsed: float) =
         ball.flyingUpdate(elapsed)
 
 
-proc paddleBounce(ball: Ball, target: Entity) =
+proc paddleBounce(ball: Ball, target: Paddle) =
     if ball.pos.x < target.pos.x - target.graphic.w/4:
         ball.angle += 10.0
     elif ball.pos.x > target.pos.x + target.graphic.w/4:
@@ -114,29 +117,11 @@ proc paddleBounce(ball: Ball, target: Entity) =
     discard sfxData["bounce"].play()
 
 
-proc brickBounce(ball: Ball, target: Entity) =
-    var direction: BounceDirection
-    let 
-        ballPos = ball.pos
-        brickPos = target.pos
-        ballHalf = ball.graphic.w / 2
-        brickHalfW = target.graphic.w / 2
-        brickHalfH = target.graphic.h / 2
-    if ballPos.x <= brickPos.x - brickHalfW - ballHalf:
-        direction = rightBounce
-    elif ballPos.x >= brickPos.x + brickHalfW + ballHalf:
-        direction = leftBounce
-    elif ballPos.y >= brickPos.y + brickHalfH + ballHalf:
-        direction = upBounce
-    else:
-        direction = downBounce
-    ball.bounce(direction)
+proc brickBounce(ball: Ball, target: Brick) =
     discard sfxData["bounce"].play()
     
+method onCollide*(ball: Ball, target: Brick) =
+    ball.brickBounce(target)
 
-
-method onCollide*(ball: Ball, target: Entity) =
-    if "paddle" in target.tags:
-        ball.paddleBounce(target)
-    if "brick" in target.tags:
-        ball.brickBounce(target)
+method onCollide*(ball: Ball, target: Paddle) =
+    ball.paddleBounce(target)

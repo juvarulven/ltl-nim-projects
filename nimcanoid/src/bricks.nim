@@ -16,8 +16,43 @@ const
 
 
 type
-    Brick = ref object of Entity
+    BrickSide* = enum
+        left
+        right
+        up
+        down
+
+    Brick* = ref object of Entity
         hp: int
+
+    BrickCollider* = ref object of LineCollider
+        side*: BrickSide
+
+
+proc newBrickCollider(brick: Entity, coord1: Coord, coord2: Coord, side: BrickSide): BrickCollider =
+    result = new BrickCollider
+    result.initLineCollider(brick, coord1, coord2)
+    result.side = side
+
+
+proc newBrickGroupCollider(brick: Brick): GroupCollider =
+    result = newGroupCollider(brick)
+    let 
+        halfW = TILEDIM[0] / 2
+        halfH = TILEDIM[1] / 2
+        ltPoint = (-halfW, -halfH)
+        lbPoint = (-halfW, halfH)
+        rtPoint = (halfW, -halfH)
+        rbPoint = (halfW, halfH)
+        leftCollider = newBrickCollider(brick, ltPoint, lbPoint, left)
+        rightCollider = newBrickCollider(brick, rtPoint, rbPoint, right)
+        upCollider = newBrickCollider(brick, ltPoint, rtPoint, up)
+        downCollider = newBrickCollider(brick, lbPoint, rbPoint, down)
+    result.list.add(leftCollider)
+    result.list.add(rightCollider)
+    result.list.add(upCollider)
+    result.list.add(downCollider)
+    result.tags.add("ball")
 
 
 proc initBrick*(brick: Brick, coord: Coord, hp: int) =
@@ -31,8 +66,7 @@ proc initBrick*(brick: Brick, coord: Coord, hp: int) =
     brick.centrify()
     brick.pos = (coord.x + TILEDIM[0] / 2, coord.y + TILEDIM[1] / 2)
     brick.tags.add("brick")
-    brick.collider = brick.newBoxCollider((0, 0), TILEDIM)
-    brick.collider.tags.add("ball")
+    brick.collider = newBrickGroupCollider(brick)
 
 
 proc newBrick*(coord: Coord, hp: int): Brick =
@@ -61,6 +95,7 @@ proc newBricks*(level: int): seq[Brick] =
 
 method update*(brick: Brick, elapsed: float) =
     brick.play($brick.hp, 1)
+
 
 method onCollide(brick: Brick, target: Entity) =
     if "ball" in target.tags:
