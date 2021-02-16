@@ -16,6 +16,11 @@ import
 const
     MIN_SPEED = 500.0
     MAX_SPEED = 1250.0
+    MIN_ANGLE = 195.0 * PI / 180.0
+    MAX_ANGLE = 345.0 * PI / 180.0
+    START_ANGLE = 240.0 * PI / 180.0
+    ANGLE_STEP = 10.0 * PI / 180.0
+    CLONE_ANGLE = 15.0 * PI / 180.0
 
 
 type
