@@ -35,23 +35,8 @@ proc newBrickCollider(brick: Entity, coord1: Coord, coord2: Coord, side: BrickSi
     result.side = side
 
 
-proc newBrickGroupCollider(brick: Brick): GroupCollider =
-    result = newGroupCollider(brick)
-    let 
-        halfW = TILEDIM[0] / 2
-        halfH = TILEDIM[1] / 2
-        ltPoint = (-halfW, -halfH)
-        lbPoint = (-halfW, halfH)
-        rtPoint = (halfW, -halfH)
-        rbPoint = (halfW, halfH)
-        leftCollider = newBrickCollider(brick, ltPoint, lbPoint, left)
-        rightCollider = newBrickCollider(brick, rtPoint, rbPoint, right)
-        upCollider = newBrickCollider(brick, ltPoint, rtPoint, up)
-        downCollider = newBrickCollider(brick, lbPoint, rbPoint, down)
-    result.list.add(leftCollider)
-    result.list.add(rightCollider)
-    result.list.add(upCollider)
-    result.list.add(downCollider)
+proc newBrickCollider(brick: Brick): BoxCollider =
+    result = newBoxCollider(brick, (1, 1), (float(TILEDIM[0]-2), float(TILEDIM[1] - 2)))
     result.tags.add("ball")
 
 
@@ -66,7 +51,7 @@ proc initBrick*(brick: Brick, coord: Coord, hp: int) =
     brick.centrify()
     brick.pos = (coord.x + TILEDIM[0] / 2, coord.y + TILEDIM[1] / 2)
     brick.tags.add("brick")
-    brick.collider = newBrickGroupCollider(brick)
+    brick.collider = newBrickCollider(brick)
 
 
 proc newBrick*(coord: Coord, hp: int): Brick =
