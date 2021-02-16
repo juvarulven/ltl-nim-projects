@@ -14,13 +14,16 @@ import
 
 
 const
-    SPEED = 750.0
+    MIN_SPEED = 500.0
+    MAX_SPEED = 1250.0
 
 
 type
     Ball* = ref object of Entity
         flying: bool
         angle: float
+        vector: Coord
+        speed: float
 
 
     BounceDirection = enum
@@ -57,6 +60,7 @@ proc bounce(ball: Ball, direction: BounceDirection) =
 proc reset*(ball: Ball) =
     ball.flying = false
     ball.angle = 230.0
+    ball.speed = MIN_SPEED
     
 
 proc initBall*(ball: Ball) =
@@ -94,8 +98,8 @@ proc flyingUpdate(ball: Ball, elapsed: float) =
         discard sfxData["bounce"].play()
     if ball.pos.y >= game.size.h.float:
         ball.reset()
-    ball.pos.x += SPEED * cos(degToRad(ball.angle)) * elapsed
-    ball.pos.y += SPEED * sin(degToRad(ball.angle)) * elapsed
+    ball.pos.x += ball.speed * cos(degToRad(ball.angle)) * elapsed
+    ball.pos.y += ball.speed * sin(degToRad(ball.angle)) * elapsed
 
 
 method update*(ball: Ball, elapsed: float) =
