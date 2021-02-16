@@ -16,55 +16,39 @@ import
 const
     MIN_SPEED = 500.0
     MAX_SPEED = 1250.0
-    MIN_ANGLE = 195.0 * PI / 180.0
-    MAX_ANGLE = 345.0 * PI / 180.0
-    START_ANGLE = 240.0 * PI / 180.0
-    ANGLE_STEP = 10.0 * PI / 180.0
-    CLONE_ANGLE = 15.0 * PI / 180.0
-
+    ANGLE_LIMITATION = (degToRad(20.0), degToRad(160.0))
+    START_ANGLE = degToRad(240.0)
+    ANGLE_STEP = degToRad(10.0)    
+    CLONE_ANGLE = degToRad(15.0)
 
 type
     Ball* = ref object of Entity
         flying: bool
-        angle: float
         vector: Coord
         speed: float
 
 
     BounceDirection = enum
-        leftBounce
-        rightBounce
-        upBounce
-        downBounce
+        verticalBounce
+        horisontalBounce
+    
+    Limitation = tuple
+        f: float
+        t: float
 
 
 proc bounce(ball: Ball, direction: BounceDirection) =
-    var angle = ball.angle - 180.0
     case direction
-    of leftBounce:
-        angle = 360.0 - angle
-        if angle >= 360.0:
-            angle -= 360.0
-    of rightBounce:
-        angle = 180.0 - angle
-        if angle > 90.0:
-            angle -= 180.0
-        else:
-            angle += 180.0
-    of upBounce:
-        angle = 90.0 - angle + 90.0
-    of downBounce:
-        angle = 270.0 - angle
-        if angle == 450.0:
-            angle = 0.0
-        else:
-            angle -= 90.0
-    ball.angle = angle
+    of verticalBounce:
+        ball.vector.x = -ball.vector.x
+    of horisontalBounce:
+        ball.vector.y = -ball.vector.y
+
 
 
 proc reset*(ball: Ball) =
     ball.flying = false
-    ball.angle = 230.0
+    ball.vector = (cos(START_ANGLE), sin(START_ANGLE))
     ball.speed = MIN_SPEED
     
 
@@ -92,19 +76,17 @@ proc staticUpdate(ball: Ball) =
 
 proc flyingUpdate(ball: Ball, elapsed: float) =
     ##  While ball flying
-    if ball.pos.x - ball.graphic.w / 2 <= 0:
-        ball.bounce(leftBounce)
-        discard sfxData["bounce"].play()
-    if ball.pos.x + ball.graphic.w / 2 >= game.size.w.float:
-        ball.bounce(rightBounce)
+    if ball.pos.x - ball.graphic.w / 2 <= 0 or ball.pos.x + ball.graphic.w / 2 >= game.size.w.float:
+        ball.bounce(verticalBounce)
         discard sfxData["bounce"].play()
     if ball.pos.y - ball.graphic.h / 2 <= 0:
-        ball.bounce(upBounce)
+        ball.bounce(horisontalBounce)
         discard sfxData["bounce"].play()
     if ball.pos.y >= game.size.h.float:
         ball.reset()
-    ball.pos.x += ball.speed * cos(degToRad(ball.angle)) * elapsed
-    ball.pos.y += ball.speed * sin(degToRad(ball.angle)) * elapsed
+    else:
+        ball.pos += ball.speed * ball.vector * elapsed
+   
 
 
 method update*(ball: Ball, elapsed: float) =
@@ -116,14 +98,28 @@ method update*(ball: Ball, elapsed: float) =
         ball.flyingUpdate(elapsed)
 
 
+proc changeAngle(ball: Ball, angle: float, limit: Limitation = (0.0, 360.0)) =
+    var resultAngle: float
+    let currentAngle = arccos(ball.vector.x)
+    resultAngle = currentAngle + angle
+    if limit == (0.0, 360.0):
+        resultAngle = currentAngle + angle
+        if resultAngle >= 360.0:
+            resultAngle -= 360.0
+        elif resultAngle < 0:
+            resultAngle = 360.0 - resultAngle
+    else:
+        resultAngle = clamp(resultAngle, limit.f, limit.t)
+    ball.vector = (cos(resultAngle), sin(resultAngle))
+
+
 proc paddleBounce(ball: Ball, target: Paddle) =
-    if ball.pos.x < target.pos.x - target.graphic.w/4:
-        ball.angle += 10.0
-    elif ball.pos.x > target.pos.x + target.graphic.w/4:
-        ball.angle -= 10.0
-    ball.angle = ball.angle.clamp(20.0, 160.0)
-    ball.bounce(downBounce)
-    discard sfxData["bounce"].play()
+    if ball.pos.x < target.pos.x - target.graphic.w/4: # hit left fourth
+        ball.changeAngle(ANGLE_STEP, ANGLE_LIMITATION)
+    elif ball.pos.x > target.pos.x + target.graphic.w/4: # hit right fourth
+        ball.changeAngle(-ANGLE_STEP, ANGLE_LIMITATION)
+    ball.bounce(horisontalBounce) 
+    discard sfxData["bounce"].play() 
 
 
 proc brickBounce(ball: Ball, target: Brick) =
