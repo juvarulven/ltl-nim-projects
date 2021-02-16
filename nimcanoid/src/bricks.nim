@@ -14,25 +14,9 @@ import
 const
     TILEDIM = (48, 16)
 
-
-type
-    BrickSide* = enum
-        left
-        right
-        up
-        down
-
+type 
     Brick* = ref object of Entity
         hp: int
-
-    BrickCollider* = ref object of LineCollider
-        side*: BrickSide
-
-
-proc newBrickCollider(brick: Entity, coord1: Coord, coord2: Coord, side: BrickSide): BrickCollider =
-    result = new BrickCollider
-    result.initLineCollider(brick, coord1, coord2)
-    result.side = side
 
 
 proc newBrickCollider(brick: Brick): BoxCollider =
