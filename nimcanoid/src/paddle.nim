@@ -39,6 +39,7 @@ proc newPaddle*(): Paddle =
 
 
 method update*(paddle: Paddle, elapsed: float) =
+    paddle.updateEntity(elapsed)
     var movement = SPEED * elapsed
 
     if ScancodeLeft.down or ScancodeA.down:

@@ -15,11 +15,11 @@ import
 
 const
     MIN_SPEED = 500.0
-    MAX_SPEED = 1250.0
+ #   MAX_SPEED = 1250.0
     ANGLE_LIMITATION = (degToRad(20.0), degToRad(160.0))
     START_ANGLE = degToRad(240.0)
     ANGLE_STEP = degToRad(10.0)    
-    CLONE_ANGLE = degToRad(15.0)
+#    CLONE_ANGLE = degToRad(15.0)
 
 type
     Ball* = ref object of Entity
