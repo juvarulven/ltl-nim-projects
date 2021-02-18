@@ -123,6 +123,13 @@ proc paddleBounce(ball: Ball, target: Paddle) =
 
 
 proc brickBounce(ball: Ball, target: Brick) =
+    var  
+        ballXDistance = abs(target.pos.x-ball.pos.x) - BRICKDIM.w/2
+        ballYDistance = abs(target.pos.y-ball.pos.y) - BRICKDIM.h/2
+    if ballXDistance >= ballYDistance:
+        ball.bounce(verticalBounce)
+    else:
+        ball.bounce(horisontalBounce)
     discard sfxData["bounce"].play()
     
 method onCollide*(ball: Ball, target: Brick) =

@@ -12,7 +12,7 @@ import
 
 
 const
-    TILEDIM = (48, 16)
+    BRICKDIM*: Dim = (48, 16)
 
 type 
     Brick* = ref object of Entity
@@ -20,7 +20,7 @@ type
 
 
 proc newBrickCollider(brick: Brick): BoxCollider =
-    result = newBoxCollider(brick, (1, 1), (float(TILEDIM[0]-2), float(TILEDIM[1] - 2)))
+    result = newBoxCollider(brick, (1, 1), (float(BRICKDIM.w-2), float(BRICKDIM.h-2)))
     result.tags.add("ball")
 
 
@@ -28,12 +28,12 @@ proc initBrick*(brick: Brick, coord: Coord, hp: int) =
     brick.initEntity()
     brick.hp = hp
     brick.graphic = gfxData["bricks"]
-    brick.initSprite(TILEDIM)
+    brick.initSprite(BRICKDIM)
     discard brick.addAnimation("3", [3], 999.0)
     discard brick.addAnimation("2", [2], 999.0)
     discard brick.addAnimation("1", [1], 999.0)
     brick.centrify()
-    brick.pos = (coord.x + TILEDIM[0] / 2, coord.y + TILEDIM[1] / 2)
+    brick.pos = (coord.x+BRICKDIM.w/2, coord.y+BRICKDIM.h/2)
     brick.tags.add("brick")
     brick.collider = newBrickCollider(brick)
 
@@ -49,17 +49,17 @@ proc newBricks*(level: int): seq[Brick] =
     filename,
     proc(input: string): int = discard parseInt(input, result))
     let 
-        left = game.size.w / 2 - rawData[0].len * TILEDIM[0] / 2
-    var y = TILEDIM[1].toFloat() * 2.0
+        left = game.size.w / 2 - rawData[0].len * BRICKDIM.w / 2
+    var y = BRICKDIM.h.toFloat() * 2.0
     for row in rawData:
         var x = left
         for hp in row:
             if hp == 0:
-                x += TILEDIM[0].toFloat()
+                x += BRICKDIM.w.toFloat()
                 continue
             result.add(newBrick((x, y), hp))
-            x += TILEDIM[0].toFloat()
-        y += TILEDIM[1].toFloat()
+            x += BRICKDIM.w.toFloat()
+        y += BRICKDIM.h.toFloat()
         
 
 method update*(brick: Brick, elapsed: float) =

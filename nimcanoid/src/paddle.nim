@@ -13,7 +13,7 @@ const
 
 type 
     Paddle* = ref object of Entity
-        level*: range[0..4]
+        level*: range[0..3]
 
 
 proc reset*(paddle: Paddle) =
