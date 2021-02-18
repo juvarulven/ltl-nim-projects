@@ -20,6 +20,7 @@ var
     defaultFont*, bigFont*: TrueTypeFont
     gfxData*: Assets[TextureGraphic]
     sfxData*: Assets[Sound]
+    paddleSprites*: seq[TextureGraphic]
 
 
 proc newFont(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTypeFont =
@@ -32,6 +33,8 @@ proc loadData*() =
     bigFont = newFont(32)
     gfxData = newAssets[TextureGraphic]("res/gfx", proc(file: string): TextureGraphic = newTextureGraphic(file))
     sfxData = newAssets[Sound]("res/sfx", proc(file: string): Sound = newSound(file))
+    for i in 0..3:
+        paddleSprites.add(gfxData[$i&"-paddle-sprite"])
 
 
 proc freeData*() =

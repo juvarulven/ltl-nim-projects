@@ -71,7 +71,7 @@ proc staticUpdate(ball: Ball) =
     ##  While ball not flying
     let paddle = game.scene.find("paddle")
     ball.pos.x = paddle.pos.x
-    ball.pos.y = paddle.pos.y - paddle.graphic.h/2 - ball.graphic.h/2
+    ball.pos.y = paddle.pos.y - PADDLEDIMS[0].h/2 - ball.graphic.h/2 + 6.0
 
 
 proc flyingUpdate(ball: Ball, elapsed: float) =
@@ -114,9 +114,9 @@ proc changeAngle(ball: Ball, angle: float, limit: Limitation = (0.0, 360.0)) =
 
 
 proc paddleBounce(ball: Ball, target: Paddle) =
-    if ball.pos.x < target.pos.x - target.graphic.w/4: # hit left fourth
+    if ball.pos.x < target.pos.x - PADDLEDIMS[target.level].w/4: # hit left fourth
         ball.changeAngle(ANGLE_STEP, ANGLE_LIMITATION)
-    elif ball.pos.x > target.pos.x + target.graphic.w/4: # hit right fourth
+    elif ball.pos.x > target.pos.x + PADDLEDIMS[target.level].w/4: # hit right fourth
         ball.changeAngle(-ANGLE_STEP, ANGLE_LIMITATION)
     ball.bounce(horisontalBounce) 
     discard sfxData["bounce"].play() 

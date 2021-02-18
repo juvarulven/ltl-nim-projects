@@ -4,32 +4,42 @@ import
     nimgame2/entity,
     nimgame2/nimgame,
     nimgame2/graphic,
+    nimgame2/types,
     data
 
 
 const
     SPEED = 1000.0
+    PADDLEDIMS*: array[4, Dim] = [(64, 16), (80, 16), (96, 16), (112, 16)] ## Dimensions of paddle sprites
+
 
 
 type 
     Paddle* = ref object of Entity
         level*: range[0..3]
+        cannons*: range[0..3]
+
+
+proc changeSprite*(paddle: Paddle) =
+    paddle.graphic = paddleSprites[paddle.level]
+    paddle.initSprite(PADDLEDIMS[paddle.level])
+    for i in 0..<PADDLEDIMS.len:
+        discard paddle.addAnimation($i, [i], 999.0)
+    paddle.centrify()
+    paddle.collider = paddle.newBoxCollider((0, 4), (PADDLEDIMS[paddle.level].w, 10))
+    paddle.collider.tags.add("ball")
 
 
 proc reset*(paddle: Paddle) =
-    paddle.pos = (game.size.w/2, float(game.size.h - paddle.graphic.h))
-
+    paddle.level = 0
+    paddle.cannons = 0
+    paddle.changeSprite()
+    paddle.pos = (game.size.w/2, float(game.size.h)-PADDLEDIMS[paddle.level].w/2)
+    
 
 proc initPaddle*(paddle: Paddle) =
     paddle.initEntity()
-    paddle.graphic = gfxData["paddle-0"]
-    paddle.centrify()
-
     paddle.tags.add("paddle")
-    paddle.collider = paddle.newBoxCollider((0.0, 0.0), paddle.graphic.dim)
-    paddle.collider.tags.add("ball")
-
-    paddle.level = 0
     paddle.reset()
 
 
@@ -48,3 +58,4 @@ method update*(paddle: Paddle, elapsed: float) =
         paddle.pos.x += movement
 
     paddle.pos.x = clamp(paddle.pos.x, paddle.center.x, game.size.w.float-paddle.center.x)
+    paddle.play($paddle.level, 1)
