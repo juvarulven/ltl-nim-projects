@@ -29,9 +29,8 @@ proc initBrick*(brick: Brick, coord: Coord, hp: int) =
     brick.hp = hp
     brick.graphic = gfxData["bricks"]
     brick.initSprite(BRICKDIM)
-    discard brick.addAnimation("3", [3], 999.0)
-    discard brick.addAnimation("2", [2], 999.0)
-    discard brick.addAnimation("1", [1], 999.0)
+    for i in 0..3:
+        discard brick.addAnimation($i, [i], 999.0)
     brick.centrify()
     brick.pos = (coord.x+BRICKDIM.w/2, coord.y+BRICKDIM.h/2)
     brick.tags.add("brick")
@@ -69,6 +68,6 @@ method update*(brick: Brick, elapsed: float) =
 method onCollide(brick: Brick, target: Entity) =
     if "ball" in target.tags:
         brick.hp -= 1
-    if brick.hp == 0:
+    if brick.hp < 0:
         discard game.scene.del(brick)
         discard sfxData["hit"].play()
