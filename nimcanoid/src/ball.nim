@@ -47,7 +47,7 @@ proc bounce(ball: Ball, direction: BounceDirection) =
 proc reset*(ball: Ball) =
     ball.flying = false
     ball.vector = (cos(START_ANGLE), sin(START_ANGLE))
-    ball.speed = MinBallSpeed
+    ball.speed = MIN_BALL_SPEED
     
 
 proc initBall*(ball: Ball) =

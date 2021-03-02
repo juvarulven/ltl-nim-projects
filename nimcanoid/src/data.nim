@@ -10,12 +10,13 @@ import
 
 
 const
-    GameWidth* = 640
-    GameHeight* = 480
-    GameTitle* = "Arcanoid on nim"
-    UpdateInterval* = 10
-    MinBallSpeed* = 200.0
-    MaxBallSpeed* = 700.0
+    GAME_WIDTH* = 640
+    GAME_HEIGHT* = 480
+    GAME_TITLE* = "Arcanoid on nim"
+    UPDATE_INTERVAL* = 4
+    FPS_LIMIT* = 60
+    MIN_BALL_SPEED* = 200.0
+    MAX_BALL_SPEED* = 700.0
 
 
 var
