@@ -12,6 +12,7 @@ if game.init(GameWidth, GameHeight, title=GameTitle, integerScale = false):
     loadData()
     
     game.setResizable(true)
+    updateInterval = UpdateInterval
     game.minSize = (GameWidth, GameHeight)
     game.windowSize = (800, 600)
     game.centrify()

@@ -41,9 +41,11 @@ method show*(scene: MainScene) =
     echo("Let's go")
     scene.paddle.reset()
     scene.ball.reset()
+    echo(updateInterval)
 
 
 method update*(scene: MainScene, elapsed: float) =
     scene.updateScene(elapsed)
+    scene.paddle.speed = scene.ball.speed + 100.0
     if ScancodeF10.pressed: colliderOutline = not colliderOutline
     if ScancodeF11.pressed: showInfo = not showInfo

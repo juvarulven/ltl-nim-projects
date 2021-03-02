@@ -14,8 +14,6 @@ import
 
 
 const
-    MIN_SPEED = 500.0
- #   MAX_SPEED = 1250.0
     ANGLE_LIMITATION = (degToRad(20.0), degToRad(160.0))
     START_ANGLE = degToRad(240.0)
     ANGLE_STEP = degToRad(10.0)    
@@ -25,7 +23,7 @@ type
     Ball* = ref object of Entity
         flying: bool
         vector: Coord
-        speed: float
+        speed*: float
 
 
     BounceDirection = enum
@@ -49,7 +47,7 @@ proc bounce(ball: Ball, direction: BounceDirection) =
 proc reset*(ball: Ball) =
     ball.flying = false
     ball.vector = (cos(START_ANGLE), sin(START_ANGLE))
-    ball.speed = MIN_SPEED
+    ball.speed = MinBallSpeed
     
 
 proc initBall*(ball: Ball) =
@@ -137,3 +135,4 @@ method onCollide*(ball: Ball, target: Brick) =
 
 method onCollide*(ball: Ball, target: Paddle) =
     ball.paddleBounce(target)
+    

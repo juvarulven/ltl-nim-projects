@@ -13,6 +13,9 @@ const
     GameWidth* = 640
     GameHeight* = 480
     GameTitle* = "Arcanoid on nim"
+    UpdateInterval* = 10
+    MinBallSpeed* = 200.0
+    MaxBallSpeed* = 700.0
 
 
 var

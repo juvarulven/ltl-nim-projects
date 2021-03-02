@@ -9,13 +9,13 @@ import
 
 
 const
-    SPEED = 1000.0
     PADDLEDIMS*: array[4, Dim] = [(64, 16), (80, 16), (96, 16), (112, 16)] ## Dimensions of paddle sprites
 
 
 
 type 
     Paddle* = ref object of Entity
+        speed*: float
         level*: range[0..3]
         cannons*: range[0..3]
 
@@ -50,7 +50,7 @@ proc newPaddle*(): Paddle =
 
 method update*(paddle: Paddle, elapsed: float) =
     paddle.updateEntity(elapsed)
-    var movement = SPEED * elapsed
+    var movement = paddle.speed * elapsed
 
     if ScancodeLeft.down or ScancodeA.down:
         paddle.pos.x -= movement
