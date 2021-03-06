@@ -17,7 +17,8 @@ const
     ANGLE_LIMITATION = (degToRad(20.0), degToRad(160.0))
     START_ANGLE = degToRad(240.0)
     ANGLE_STEP = degToRad(10.0)    
-#    CLONE_ANGLE = degToRad(15.0)
+    CLONE_ANGLE = degToRad(15.0)
+    DOUBLE_PI = PI * 2
 
 type
     Ball* = ref object of Entity
@@ -80,7 +81,10 @@ proc flyingUpdate(ball: Ball, elapsed: float) =
         ball.bounce(horisontalBounce)
         discard sfxData["bounce"].play()
     if ball.pos.y >= game.size.h.float:
-        ball.reset()
+        if game.scene.findAll("ball").len() == 1:
+            ball.reset()
+        else:
+            discard game.scene.del(ball)
     else:
         ball.pos += ballSpeed * ball.vector * elapsed
    
@@ -95,18 +99,16 @@ method update*(ball: Ball, elapsed: float) =
         ball.flyingUpdate(elapsed)
 
 
-proc changeAngle(ball: Ball, angle: float, limit: Limitation = (0.0, 360.0)) =
-    var resultAngle: float
-    let currentAngle = arccos(ball.vector.x)
-    resultAngle = currentAngle + angle
-    if limit == (0.0, 360.0):
-        resultAngle = currentAngle + angle
-        if resultAngle >= 360.0:
-            resultAngle -= 360.0
-        elif resultAngle < 0:
-            resultAngle = 360.0 - resultAngle
+proc changeAngle(ball: Ball, angle: float, limit: Limitation = (0.0, DOUBLE_PI)) =
+    var currentAngle, resultAngle: float
+    if ball.vector.y < 0.0:
+        currentAngle = DOUBLE_PI - arccos(ball.vector.x)
     else:
+        currentAngle = arccos(ball.vector.x)
+    resultAngle = currentAngle + angle
+    if limit != (0.0, DOUBLE_PI):
         resultAngle = clamp(resultAngle, limit.f, limit.t)
+    echo(currentAngle.radToDeg(), " ", resultAngle.radToDeg())
     ball.vector = (cos(resultAngle), sin(resultAngle))
 
 
@@ -134,4 +136,18 @@ method onCollide*(ball: Ball, target: Brick) =
 
 method onCollide*(ball: Ball, target: Paddle) =
     ball.paddleBounce(target)
+
+
+method doubleBall*(ball: Ball) =
+    if ball.flying:
+        var anotherBall = newBall()
+        anotherBall.pos = (ball.pos.x, ball.pos.y)
+        anotherBall.flying = true
+        anotherBall.vector = (ball.vector.x, ball.vector.y)
+        ball.changeAngle(CLONE_ANGLE)
+        anotherBall.changeAngle(-CLONE_ANGLE)
+        game.scene.add(anotherBall)
+
+
     
+

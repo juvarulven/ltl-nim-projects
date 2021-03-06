@@ -2,10 +2,10 @@ import
     nimgame2/assets,
     nimgame2/entity,
     nimgame2/nimgame,
-    nimgame2/graphic,
     nimgame2/types,
     nimgame2/scene,
     random,
+    ball,
     data,
     paddle
 
@@ -57,6 +57,9 @@ proc applyModificator(modificator: Modificator, paddle: Paddle) =
     of modSpeedDown:
         ballSpeed -= 100.0
         if ballSpeed < MIN_BALL_SPEED: ballSpeed = MIN_BALL_SPEED
+    of modDoubleBall:
+        for entity in game.scene.findAll("ball"):
+            entity.doubleBall()
     else: echo(modificator.modType)
 
     

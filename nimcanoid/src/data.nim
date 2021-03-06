@@ -7,6 +7,7 @@ import
     nimgame2/truetypefont,
     nimgame2/texturegraphic,
     nimgame2/audio,
+    nimgame2/entity,
     random
 
 
@@ -51,3 +52,7 @@ proc freeData*() =
         graphic.free()
     for sound in sfxData.values():
         sound.free()
+
+
+method doubleBall*(entity: Entity) {.base.} =
+    discard
