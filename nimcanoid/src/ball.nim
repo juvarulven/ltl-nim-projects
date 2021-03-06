@@ -23,7 +23,6 @@ type
     Ball* = ref object of Entity
         flying: bool
         vector: Coord
-        speed*: float
 
 
     BounceDirection = enum
@@ -47,7 +46,7 @@ proc bounce(ball: Ball, direction: BounceDirection) =
 proc reset*(ball: Ball) =
     ball.flying = false
     ball.vector = (cos(START_ANGLE), sin(START_ANGLE))
-    ball.speed = MIN_BALL_SPEED
+    ballSpeed = MIN_BALL_SPEED
     
 
 proc initBall*(ball: Ball) =
@@ -83,7 +82,7 @@ proc flyingUpdate(ball: Ball, elapsed: float) =
     if ball.pos.y >= game.size.h.float:
         ball.reset()
     else:
-        ball.pos += ball.speed * ball.vector * elapsed
+        ball.pos += ballSpeed * ball.vector * elapsed
    
 
 

@@ -47,8 +47,16 @@ proc newModificator*(coord: Coord): Modificator =
 
 proc applyModificator(modificator: Modificator, paddle: Paddle) =
     case modificator.modType
-    of modPaddleEnlarge: paddle.enlarge()
-    of modPaddleReduce: paddle.reduce()
+    of modPaddleEnlarge: 
+        paddle.enlarge()
+    of modPaddleReduce: 
+        paddle.reduce()
+    of modSpeedUp:
+        ballSpeed += 100.0
+        if ballSpeed > MAX_BALL_SPEED: ballSpeed = MAX_BALL_SPEED
+    of modSpeedDown:
+        ballSpeed -= 100.0
+        if ballSpeed < MIN_BALL_SPEED: ballSpeed = MIN_BALL_SPEED
     else: echo(modificator.modType)
 
     

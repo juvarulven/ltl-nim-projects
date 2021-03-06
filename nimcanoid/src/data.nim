@@ -26,6 +26,7 @@ var
     gfxData*: Assets[TextureGraphic]
     sfxData*: Assets[Sound]
     paddleSprites*: seq[TextureGraphic]
+    ballSpeed*: float
 
 
 proc newFont(size: int, path: string = "res/fnt/outline_inverkrug.otf"): TrueTypeFont =
