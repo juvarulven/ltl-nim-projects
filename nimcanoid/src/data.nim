@@ -6,7 +6,8 @@ import
     nimgame2/font,
     nimgame2/truetypefont,
     nimgame2/texturegraphic,
-    nimgame2/audio
+    nimgame2/audio,
+    random
 
 
 const
@@ -39,6 +40,7 @@ proc loadData*() =
     sfxData = newAssets[Sound]("res/sfx", proc(file: string): Sound = newSound(file))
     for i in 0..3:
         paddleSprites.add(gfxData[$i&"-paddle-sprite"])
+    randomize()
 
 
 proc freeData*() =

@@ -4,17 +4,20 @@ import
     nimgame2/nimgame,
     nimgame2/graphic,
     nimgame2/types,
+    nimgame2/scene,
     random,
-    data
+    data,
+    paddle
 
 
 const
     MODDIM*:Dim = (48, 16)
+    MODSPEED* = 100.0
 
 
 type
     ModType* = enum
-        modSpeedUp, modSpeedDown, modPaddleReduse, modPaddleEnlarge, modDoubleBall, modShooter
+        modSpeedUp, modSpeedDown, modPaddleReduce, modPaddleEnlarge, modDoubleBall, modShooter
 
     Modificator* = ref object of Entity
         modType*: ModType
@@ -30,9 +33,9 @@ proc initModificator*(modificator: Modificator, coord: Coord) =
     modificator.modType = ModType(rand(ord(ModType.high())))
     modificator.graphic = gfxData["modificators"]
     modificator.initSprite(MODDIM)
-    modificator.addAnimation("image", [ord(modificator.modType)], 999.0)
+    discard modificator.addAnimation("image", [ord(modificator.modType)], 999.0)
     modificator.centrify()
-    modificator.pos = (coord.x+MODDIM.w.toFloat(), coord.y+MODDIM.h.toFloat())
+    modificator.pos = (coord.x, coord.y+MODDIM.h.toFloat())
     modificator.tags.add("modificator")
     modificator.collider = newModificatorCollider(modificator)
 
@@ -41,5 +44,21 @@ proc newModificator*(coord: Coord): Modificator =
     new result
     result.initModificator(coord)
 
-    
 
+proc applyModificator(modificator: Modificator, paddle: Paddle) =
+    case modificator.modType
+    of modPaddleEnlarge: paddle.enlarge()
+    of modPaddleReduce: paddle.reduce()
+    else: echo(modificator.modType)
+
+    
+method update*(modificator: Modificator, elapsed: float) =
+    modificator.updateEntity(elapsed)
+    modificator.pos.y += MODSPEED * elapsed
+    if modificator.pos.y > game.size.h.float:
+        discard game.scene.del(modificator)
+    modificator.play("image", 1)
+
+method onCollide*(modificator: Modificator, paddle: Paddle) =
+    applyModificator(modificator, paddle)
+    discard game.scene.del(modificator)

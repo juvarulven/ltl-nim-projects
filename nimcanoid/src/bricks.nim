@@ -8,7 +8,8 @@ import
     nimgame2/utils,
     nimgame2/scene,
     nimgame2/audio,
-    data
+    data,
+    modificators
 
 
 const
@@ -69,5 +70,6 @@ method onCollide(brick: Brick, target: Entity) =
     if "ball" in target.tags:
         brick.hp -= 1
     if brick.hp < 0:
+        game.scene.add(newModificator(brick.pos))
         discard game.scene.del(brick)
         discard sfxData["hit"].play()

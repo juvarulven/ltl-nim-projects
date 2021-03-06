@@ -38,7 +38,6 @@ proc newMainScene*(): MainScene =
 
 
 method show*(scene: MainScene) =
-    echo("Let's go")
     scene.paddle.reset()
     scene.ball.reset()
     

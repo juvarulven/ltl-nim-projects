@@ -48,6 +48,18 @@ proc newPaddle*(): Paddle =
     result.initPaddle()
 
 
+proc enlarge*(paddle: Paddle) =
+    if paddle.level < 3:
+        paddle.level += 1
+        paddle.changeSprite()
+
+
+proc reduce*(paddle: Paddle) =
+    if paddle.level > 0:
+        paddle.level -= 1
+        paddle.changeSprite()
+
+
 method update*(paddle: Paddle, elapsed: float) =
     paddle.updateEntity(elapsed)
     var movement = paddle.speed * elapsed
@@ -58,4 +70,4 @@ method update*(paddle: Paddle, elapsed: float) =
         paddle.pos.x += movement
 
     paddle.pos.x = clamp(paddle.pos.x, paddle.center.x, game.size.w.float-paddle.center.x)
-    paddle.play($paddle.level, 1)
+    paddle.play($paddle.cannons, 1)
